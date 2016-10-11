@@ -1,0 +1,14 @@
+{
+    "name": "nowa_h5",
+    "options": {
+        "type": "salt",
+        "template": "https://github.com/nowa-webpack/template-salt/archive/master.zip",
+        "npm": "npm",
+        "vars": {
+            "__LOCAL__": true
+        },
+        "buildvars": {
+            "__LOCAL__": [ false ]
+        }
+    }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>积分详情</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="cleartype" content="on">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+
+    <!-- 外部样式资源加载 -->
+    <link rel="stylesheet" href="//g.alicdn.com/platform/tingle-ui/1.0.3/dd.min.css">
+    <link rel="stylesheet" href="../css/detaildata.css">
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 外部脚本资源加载 -->
+    <script src="//g.alicdn.com/platform/c/??zepto/1.1.6/zepto.min.js,react/0.14.3/react-with-addons.min.js,react/0.14.3/react-dom.min.js,react-router/2.0.0/umd/ReactRouter.min.js,fastclick/1.0.6/lib/fastclick.min.js,reflux/0.3.0/dist/reflux.min.js,lie/3.0.2/dist/lie.polyfill.min.js,salt-fetch/2.0.0/dist/salt-fetch.min.js,salt-router/0.0.1/salt-router.min.js"></script>
+    <script src="//g.alicdn.com/dingding/open-develop/0.7.0/dingtalk.js"></script>
+</head>
+<body>
+    <div id="t-user-info" class="t-FAC" >
+        <div class="userImg t-MB2">
+            <img width="40" class="" />
+        </div>
+        <p class="userName t-FS20 t-MB4">
+        </p>
+        <p class="honor t-FS12 t-MB8">
+            荣誉积分: <span class="t-honor"></span>&nbsp;&nbsp;&nbsp;
+            可用积分: <span class="t-use"></span>
+        </p>
+    </div>
+    <div class="detail" id="detailEvent">
+        <ul>
+
+        </ul>
+        <div class="t-loading t-FS12"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> 努力加载中...</div>
+        <div class="t-noLoading t-FS12">已没有底线了..</div>
+    </div>
+
+<script>
+        var val = JSON.parse(salt.router.getMessage('detaildata'))||{};
+        var pageNum = 0,pageSize = 15;
+        var isLoad = false;
+        //初始化
+        dd.ready(function(){
+            dd.device.notification.showPreloader({
+                text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+                showIcon: true, //是否显示icon，默认true
+                onSuccess : function(result) {
+                    /*{}*/
+                },
+                onFail : function(err) {
+                    //alert(JSON.stringify(err))
+                }
+            })
+        })
+
+        $('img').attr('src',val.avatar || 'https://img.alicdn.com/tps/TB1.IgIKpXXXXbgXpXXXXXXXXXX-116-116.png');
+        $('.userName').html(val.name);
+        $('p .t-honor').html(val.ScoreAll);
+        $('p .t-use').html(val.ScoreLeft);
+        $.ajax({
+            url: 'http://dd.tongbu.com/api/api.ashx?UserScoreLog',
+            type: 'GET',
+            data: {
+                corpid: val.corpid,
+                userid: val.userid,
+                "~callback": 'jsonp',
+                pageIndex: pageNum,
+                pageSize: pageSize
+            },
+            success: function(data){
+                alert(JSON.stringify(data));
+            },
+            error: function(res){
+                var data = JSON.parse(res.responseText.match(/{.*?]}/g)[0]);
+                var detailData = data.Data;
+                if(data.Code == 0){
+                    detailData.forEach(function(item){
+                        $('.detail ul').append($('<li class="t-FAL t-PL14">'+ '<p class="t-title">'+ item.Score +
+                                             '<span class="t-date t-FR">'+ item.GrantTime +'</span>'+
+                                        '</p>'+ '<p class="t-text t-omit">'+item.Reason+'</p>'+'</li>'));
+
+                    });
+                    dd.ready(function(){
+                        dd.device.notification.hidePreloader({
+                            onSuccess : function(result) {
+                                /*{}*/
+                            },
+                            onFail : function(err) {}
+                        })
+                    })
+
+                }else{
+                    $('.detail ul').append('no data!');
+                    dd.ready(function(){
+                        dd.device.notification.hidePreloader({
+                            onSuccess : function(result) {
+                                /*{}*/
+                            },
+                            onFail : function(err) {}
+                        })
+                    })
+                }
+            }
+        })
+    //禁止事件
+    document.getElementById('t-user-info').addEventListener('touchmove',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+    },false);
+    //下拉刷新
+    document.getElementById('detailEvent').addEventListener('touchmove',function(e){
+        /*
+         document.body.scrollTop --网页被卷去的高
+         window.screen.availHeight --网页工作区域
+         document.body.clientHeight --网页可见区域高
+         */
+        var diffY = document.body.clientHeight - window.screen.availHeight;
+        var hideY = document.body.scrollTop;
+
+        if(hideY>=(diffY-55)){
+            if(isLoad){
+                return ;
+            }
+            pageNum++;
+            $('.t-loading').css('display','block');
+            isLoad = true;
+            $.ajax({
+                url: 'http://dd.tongbu.com/api/api.ashx?UserScoreLog',
+                type: 'GET',
+                data: {
+                    corpid: val.corpid,
+                    userid: val.userid,
+                    "~callback": 'jsonp',
+                    pageIndex: pageNum,
+                    pageSize: pageSize
+                },
+                success: function(data){
+                    alert(JSON.stringify(data));
+                },
+                error: function(res){
+                    var data = JSON.parse(res.responseText.match(/{.*?]}/g)[0]);
+                    var detailData = data.Data;
+                    if(data.Code == 0 && data.Data.length!=0){
+                        detailData.forEach(function(item){
+                            $('.detail ul').append($('<li class="t-FAL t-PL14">'+ '<p class="t-title">'+ item.Score +
+                                '<span class="t-date t-FR">'+ item.GrantTime +'</span>'+
+                                '</p>'+ '<p class="t-text t-omit">'+item.Reason+'</p>'+'</li>'));
+
+                        });
+                        $('.t-loading').css('display','none');
+                        $('.t-noLoading').css('display','none');
+                        isLoad = false;
+
+                    }else{
+                        $('.t-loading').css('display','none');
+                        $('.t-noLoading').css('display','block');
+                        isLoad = true;
+                    }
+                }
+            })
+        }
+    },false);
+
+</script>
+</body>
+</html>

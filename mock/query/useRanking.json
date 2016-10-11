@@ -1,0 +1,66 @@
+{
+    "success": true,
+    "content": {
+        "availableList": [{
+            "rankingNo": "1",
+            "name": "张大大",
+            "honor": "10000"
+        }, {
+            "rankingNo": "2",
+            "name": "李斯羽",
+            "honor": "9000"
+        }, {
+            "rankingNo": "3",
+            "name": "孙浩",
+            "honor": "8000"
+        },{
+            "rankingNo": "4",
+            "name": "angelBaby",
+            "honor": "7000"
+        }, {
+            "rankingNo": "5",
+            "name": "angryBB",
+            "honor": "6000"
+        },{
+            "rankingNo": "1",
+            "name": "张大大",
+            "honor": "10000"
+        }, {
+            "rankingNo": "2",
+            "name": "李斯羽",
+            "honor": "9000"
+        }, {
+            "rankingNo": "3",
+            "name": "孙浩",
+            "honor": "8000"
+        },{
+            "rankingNo": "4",
+            "name": "angelBaby",
+            "honor": "7000"
+        }, {
+            "rankingNo": "5",
+            "name": "angryBB",
+            "honor": "6000"
+        },{
+            "rankingNo": "1",
+            "name": "张大大",
+            "honor": "10000"
+        }, {
+            "rankingNo": "2",
+            "name": "李斯羽",
+            "honor": "9000"
+        }, {
+            "rankingNo": "3",
+            "name": "孙浩",
+            "honor": "8000"
+        },{
+            "rankingNo": "4",
+            "name": "angelBaby",
+            "honor": "7000"
+        }, {
+            "rankingNo": "5",
+            "name": "angryBB",
+            "honor": "6000"
+        }]
+    }
+}
